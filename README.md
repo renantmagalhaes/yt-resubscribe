@@ -1,31 +1,32 @@
 # YouTube Subscription Importer
 
-Automate re-subscribing to your favorite YouTube channels on a new account using data exported via [Google Takeout](https://takeout.google.com/). This script uses Selenium to log in and re-subscribe to each channel.
+Automate re-subscribing to your favorite YouTube channels on a new account using data exported via [Google Takeout](https://takeout.google.com/). This script uses **undetected-chromedriver** to bypass bot detection, handles login sessions intelligently, and includes a robust retry mechanism.
 
 ---
 
 ## 📦 Features
 
-- ✅ Imports channels from `subscriptions.csv`
-- ✅ Logs all successful subscriptions
-- ✅ Skips and logs channels that fail
-- ✅ Can resume where it left off after interruption
-- ✅ Restarts browser every 25 subscriptions for stability
+- ✅ **Headless Mode**: Runs silently in the background (default).
+- ✅ **Smart Session**: Saves cookies (`cookies.pkl`) so you only log in once.
+- ✅ **Auto-Retry**: Automatically retries failed subscriptions at the end.
+- ✅ **Resumable**: Can resume where it left off after interruption.
+- ✅ **Stability**: Restarts browser every 20 subscriptions to prevent memory leaks/hangs.
 
 ---
 
 ## 🐧 Compatibility
 
-🧪 **Tested on Linux only**  
-May work on Windows/macOS with minor adjustments, but not guaranteed.
+- 🧪 **Tested on Linux and MacOS**
+- Should work on Windows with minor path adjustments.
 
 ---
 
 ## 🔧 Requirements
 
 - Python 3.7+
-- Google Chrome
-- ChromeDriver (same version as your Chrome)
+- Google Chrome installed
+
+The script handles the ChromeDriver execution automatically using `undetected-chromedriver`.
 
 ---
 
@@ -36,9 +37,9 @@ May work on Windows/macOS with minor adjustments, but not guaranteed.
 1. Go to [Google Takeout](https://takeout.google.com/).
 2. Select only **YouTube and YouTube Music**.
 3. Export format: `.zip`, then extract it.
-4. Inside `subscriptions/` you’ll find a file like `subscriptions.csv`.
+4. Finds `subscriptions.csv` inside `subscriptions/`.
 
-Copy this CSV to the same folder as the script.
+Copy `subscriptions.csv` to the same folder as the script.
 
 ---
 
@@ -50,36 +51,34 @@ pip install -r requirements.txt
 
 ---
 
-### 3. Download ChromeDriver
-
-Download the version matching your installed Chrome:
-👉 https://chromedriver.chromium.org/downloads
-
-Unzip and place it in your system `PATH` or next to the script.
-
----
-
-### 4. Run the Script
+### 3. Run the Script
 
 ```bash
 python3 youtube_resubscribe.py
 ```
 
-The browser will open. Login to your new YouTube account, press Enter, and it will begin.
+**First Run:**
+- The browser will open (visible) for you to log in to your Google Account.
+- Once logged in, press **Enter** in the terminal.
+- The script will save your session and switch to headless mode (optional in code) or continue processing.
+
+**Subsequent Runs:**
+- It uses the saved session (`cookies.pkl`) and runs immediately.
 
 ---
 
 ## 📁 Output Files
 
-- `subscription_log.txt` – Successful subscriptions
-- `skipped_channels.csv` – Any failures, for retry later
-- `last_offset.txt` – Stores the resume point if interrupted
+- `subscription_log.txt` – Successful subscriptions.
+- `skipped.csv` – Temporarily stores skipped channels during the run.
+- `problem.csv` – Channels that failed even after retrying (Likely terminated channels or 404s).
+- `last_offset.txt` – Stores the resume point.
 
 ---
 
 ## 🛑 Notes
 
-- This script mimics human behavior but **may still hit rate limits** if used excessively.
+- This script mimics human behavior but **may still hit rate limits**.
 - Use responsibly. Do not spam or violate YouTube’s Terms of Service.
 
 ---
@@ -88,14 +87,14 @@ The browser will open. Login to your new YouTube account, press Enter, and it wi
 
 - **Profile locked?**
   ```bash
-  pkill -f "chrome.*selenium-profile"
+  pkill -f "chrome.*selenium"
   ```
-- **ChromeDriver mismatch?** Ensure Chrome and ChromeDriver versions match exactly.
+- **Login issues?** Delete `cookies.pkl` and run the script again to re-login.
 
 ---
 
 ## 🧪 Tested On
 
 - openSUSE Tumbleweed
-- Google Chrome 123+
-- Selenium 4.14.0
+- MacOS Sequoia
+- Python 3.11+
