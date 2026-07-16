@@ -101,4 +101,4 @@ python3 youtube_resubscribe.py
 
 - openSUSE Tumbleweed
 - MacOS Sequoia
-- Python 3.11+
+- Python 3.13+
