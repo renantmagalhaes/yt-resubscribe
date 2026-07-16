@@ -48,7 +48,7 @@ Copy `subscriptions.csv` to the same folder as the script.
 ### 2. Install Python Requirements
 
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ---
@@ -60,11 +60,13 @@ python3 youtube_resubscribe.py
 ```
 
 **First Run:**
+
 - The browser will open (visible) for you to log in to your Google Account.
 - Once logged in, press **Enter** in the terminal.
 - The script will save your session and switch to headless mode (optional in code) or continue processing.
 
 **Subsequent Runs:**
+
 - It uses the saved session (`cookies.pkl`) and runs immediately.
 
 ---
