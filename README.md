@@ -23,10 +23,12 @@ Automate re-subscribing to your favorite YouTube channels on a new account using
 
 ## 🔧 Requirements
 
-- Python 3.7+
+- Python 3.13+
 - Google Chrome installed
 
 The script handles the ChromeDriver execution automatically using `undetected-chromedriver`.
+
+> **Note:** Python 3.12+ dropped `distutils` from the standard library, which `undetected-chromedriver` still relies on. `requirements.txt` includes `setuptools` (which provides a `distutils` shim) to cover this — just make sure you install requirements with `python3 -m pip install -r requirements.txt` inside your venv (not a `pip` that's aliased elsewhere, e.g. to `pipx`).
 
 ---
 

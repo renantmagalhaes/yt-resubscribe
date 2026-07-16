@@ -1,6 +1,8 @@
 import csv
+import re
 import time
 import os
+import subprocess
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -25,7 +27,6 @@ if os.path.exists(offset_file):
             pass
 
 # === Setup Chrome ===
-# === Setup Chrome ===
 def get_chrome_options():
     options = uc.ChromeOptions()
     options.add_argument("--disable-background-timer-throttling")
@@ -35,17 +36,30 @@ def get_chrome_options():
     options.add_argument("--user-data-dir=selenium-profile")
     return options
 
+def get_chrome_major_version():
+    for binary in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser"):
+        try:
+            output = subprocess.check_output([binary, "--version"], text=True)
+            match = re.search(r"(\d+)\.", output)
+            if match:
+                return int(match.group(1))
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            continue
+    return None
+
+chrome_major_version = get_chrome_major_version()
+
 # Check if profile exists; if not, run headful for login
 if not os.path.exists("selenium-profile"):
     print("⚠️  No session found. Launching browser for MANUAL login...")
-    driver = uc.Chrome(options=get_chrome_options(), headless=False)
+    driver = uc.Chrome(options=get_chrome_options(), headless=False, version_main=chrome_major_version)
     driver.get("https://www.youtube.com")
     input("👉 Log into your YouTube account in the opened browser, then press Enter here to continue...")
     driver.quit()
     print("✅ Login session saved.")
 
 print("🚀 Running in HEADLESS mode using saved session...")
-driver = uc.Chrome(options=get_chrome_options(), headless=True)
+driver = uc.Chrome(options=get_chrome_options(), headless=True, version_main=chrome_major_version)
 
 # === Helper Function ===
 def subscribe_to_channel(driver, channel_url, channel_title):
@@ -107,7 +121,7 @@ with open(csv_file, newline='', encoding='utf-8') as f:
         if (index + 1) % 25 == 0:
             print("🔄 Restarting browser to avoid memory/timeouts...")
             driver.quit()
-            driver = uc.Chrome(options=get_chrome_options(), headless=True)
+            driver = uc.Chrome(options=get_chrome_options(), headless=True, version_main=chrome_major_version)
 
 skipped.close()
 

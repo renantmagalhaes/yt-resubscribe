@@ -212,6 +212,8 @@ Thumbs.db
 last_offset.txt
 subscription_log.txt
 skipped_channels.csv
+skipped_channels.csv
+channels_with_problem.csv
 
 # Chrome user profile
 selenium-profile/
